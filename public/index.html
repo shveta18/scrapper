@@ -17,15 +17,24 @@
         <p class="lead">Read the top 20 articles from the NY Times by clicking the button below.</p>
         <button type="button " class="btn btn-primary scrape-btn">Scrape Articles</button>
     </div>
-    <div id="results">
-        <table id="results-table">
-            <tr>
-                <th>Title</th>
-                <th>Author</th>
-                <th>Read/Unread</th>
-            </tr>
-        </table>
+   
 
+    <div id="results" style="display: none">
+        <table class="table table-striped">
+          <thead>
+            <tr>
+              <th scope="col">#</th>
+              <th scope="col">Heading</th>
+              <th scope="col">Summary</th>
+              <th scope="col">Link</th>
+            </tr>
+          </thead>
+          <tbody class="results-table" id="results-table">
+  
+          </tbody>
+        </table>
+  
+      </div>
 
         <script src="https://code.jquery.com/jquery-3.5.1.js"
             integrity="sha256-QWo7LDvxbWT2tbbQ97B53yJnYU3WhH/C8ycbRAkjPDc=" crossorigin="anonymous"></script>
@@ -44,7 +53,24 @@
                     method: "GET",
                     url: "/scrape"
                 }).then(function (data) {
+                    console.log("Checkpoint A ********************* Check scraped data.");
                     console.log(data);
+                    $("#results").show();
+                    // if data is received, show a table of the list for first 20 articles
+                    if(data) {
+                        for (var i = 0; i < 20; i++) {
+                        var row = `<tr>
+                        <td>${i + 1}</td>
+                        <td>${data[i].headline}</td>
+                        <td>${data[i].summary}</td>
+                        <td>${data[i].link}</td>
+                      </tr>`
+              $("#results-table").append(row);
+            }
+                    }
+                    else {
+                        console.log("&&&&&&&&&&&&&&&");
+                    }
                 });
             });
         </script>

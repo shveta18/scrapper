@@ -24,23 +24,20 @@ mongoose.connect("mongodb://localhost/unit18Populater", { useNewUrlParser: true 
 
 //ROUTE 1: To scrape the news website and save it to the database when scrape button clicked (app.js)
 app.get("/scrape", function (req, res) {
+    var result = {};
     // get the html body using axios
     axios.get("https://www.nytimes.com/").then(function (response) {
+
         // load the html body into cheerio
         var $ = cheerio.load(response.data);
         console.log("response received");
         // Get headline, summary and link for each article
         $("article.css-8atqhb").each(function (i, element) {
-     //   $("div.css-6p6lnl").each(function (i, element) {
-            var result = {};
-            // result.headline = $(element).find("h2.css-1cmu9py").text();
-            // result.summary = $(element).find("p.css-1pfq5u").text();
+
             result.headline = $(element).find("h2").text();
             result.summary = $(element).find("p").text();
             result.link = $(element).find("a").attr("href");
-
-            console.log(result);
-           // Create a new Article using the `result` object built from scraping
+            // Create a new Article using the `result` object built from scraping
             db.Article.create(result)
                 .then(function (dbArticle) {
                     // View the added result in the console
@@ -50,12 +47,21 @@ app.get("/scrape", function (req, res) {
                     // If an error occurred, log it
                     console.log(err);
                 });
+
         });
+        console.log("The response serverside is: ");
+        db.Article.find({})
+            .then(function (dbArticle) {
+                // If we were able to successfully find Articles, send them back to the client
+                res.json(dbArticle);
+            })
+            .catch(function (err) {
+                // If an error occurred, send it to the client
+                res.json(err);
+            });
+
     });
 
-    console.log("The response is:");
-    // store the resuls obtained in the db
-    // db.Article.create(result);
 });
 
 
