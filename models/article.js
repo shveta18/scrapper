@@ -5,7 +5,11 @@ var mongoose = require("mongoose");
 var Schema = mongoose.Schema;
 
 var ArticlesSchema = new Schema({
-    title: {
+    headline: {
+        type: String,
+        required: true
+    },
+    summary: {
         type: String,
         required: true
     },

@@ -28,21 +28,32 @@ app.get("/scrape", function (req, res) {
     axios.get("https://www.nytimes.com/").then(function (response) {
         // load the html body into cheerio
         var $ = cheerio.load(response.data);
-        console.log(response.data);
+        console.log("response received");
         // Get headline, summary and link for each article
-        $(".css-6p6lnl").each(function (i, element) {
+        $("article.css-8atqhb").each(function (i, element) {
+     //   $("div.css-6p6lnl").each(function (i, element) {
             var result = {};
-             result.headline = $(this).children("h2").attr("css-1cmu9py").text();
-            result.summary = $(this).children("p").text();
-            result.link = $(this).children("a").attr("href");
+            // result.headline = $(element).find("h2.css-1cmu9py").text();
+            // result.summary = $(element).find("p.css-1pfq5u").text();
+            result.headline = $(element).find("h2").text();
+            result.summary = $(element).find("p").text();
+            result.link = $(element).find("a").attr("href");
 
             console.log(result);
-            
+            // Create a new Article using the `result` object built from scraping
+            // db.Article.create(result)
+            //     .then(function (dbArticle) {
+            //         // View the added result in the console
+            //         console.log(dbArticle);
+            //     })
+            //     .catch(function (err) {
+            //         // If an error occurred, log it
+            //         console.log(err);
+            //     });
         });
     });
 
     console.log("The response is:");
-    console.log(res);
     // store the resuls obtained in the db
     // db.Article.create(result);
 });
