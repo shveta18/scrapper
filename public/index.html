@@ -27,6 +27,7 @@
                     <th scope="col">Heading</th>
                     <th scope="col">Summary</th>
                     <th scope="col">Link</th>
+                    <th scope="col" class="notes-column">Notes</th>
                 </tr>
             </thead>
             <tbody class="results-table" id="results-table">
@@ -56,6 +57,7 @@
                 console.log("Checkpoint A ********************* Check scraped data.");
                 console.log(data);
                 $("#results").show();
+
                 // if data is received, show a table of the list for first 20 articles
                 if (data) {
                     for (var i = 0; i < 20; i++) {
@@ -65,12 +67,12 @@
                         <td>${data[i].headline}</td>
                         <td>${data[i].summary}</td>
                         <td>${data[i].link}</td>
+                        <td><button class="add-note">Add</button></td>
                       </tr>`
-
-            
+                        // add a save button to the last column
                         $("#results-table").append(row);
                         //add the data id as the attribute
-                        $()
+                        $(".add-note").attr("value", id);
                     }
                 }
                 else {
@@ -81,7 +83,7 @@
 
 
         // Whenever someone clicks a row tag
-        $(document).on("click", "tr", function () {
+        $(".add-note").on("click", function () {
             // Empty the notes from the note section
             $("#notes").empty();
             // Save the id from the p tag
