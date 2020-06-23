@@ -17,63 +17,103 @@
         <p class="lead">Read the top 20 articles from the NY Times by clicking the button below.</p>
         <button type="button " class="btn btn-primary scrape-btn">Scrape Articles</button>
     </div>
-   
+
 
     <div id="results" style="display: none">
         <table class="table table-striped">
-          <thead>
-            <tr>
-              <th scope="col">#</th>
-              <th scope="col">Heading</th>
-              <th scope="col">Summary</th>
-              <th scope="col">Link</th>
-            </tr>
-          </thead>
-          <tbody class="results-table" id="results-table">
-  
-          </tbody>
+            <thead>
+                <tr>
+                    <th scope="col">#</th>
+                    <th scope="col">Heading</th>
+                    <th scope="col">Summary</th>
+                    <th scope="col">Link</th>
+                </tr>
+            </thead>
+            <tbody class="results-table" id="results-table">
+
+            </tbody>
         </table>
-  
-      </div>
 
-        <script src="https://code.jquery.com/jquery-3.5.1.js"
-            integrity="sha256-QWo7LDvxbWT2tbbQ97B53yJnYU3WhH/C8ycbRAkjPDc=" crossorigin="anonymous"></script>
-        <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"
-            integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo"
-            crossorigin="anonymous"></script>
-        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"
-            integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI"
-            crossorigin="anonymous"></script>
-        <script>
-            $(".scrape-btn").on("click", function (event) {
-                event.preventDefault();
-                console.log("button clicked");
+    </div>
 
-                $.ajax({
-                    method: "GET",
-                    url: "/scrape"
-                }).then(function (data) {
-                    console.log("Checkpoint A ********************* Check scraped data.");
-                    console.log(data);
-                    $("#results").show();
-                    // if data is received, show a table of the list for first 20 articles
-                    if(data) {
-                        for (var i = 0; i < 20; i++) {
+    <script src="https://code.jquery.com/jquery-3.5.1.js"
+        integrity="sha256-QWo7LDvxbWT2tbbQ97B53yJnYU3WhH/C8ycbRAkjPDc=" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"
+        integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo"
+        crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"
+        integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI"
+        crossorigin="anonymous"></script>
+    <script>
+        $(".scrape-btn").on("click", function (event) {
+            event.preventDefault();
+            console.log("button clicked");
+
+            $.ajax({
+                method: "GET",
+                url: "/scrape"
+            }).then(function (data) {
+                console.log("Checkpoint A ********************* Check scraped data.");
+                console.log(data);
+                $("#results").show();
+                // if data is received, show a table of the list for first 20 articles
+                if (data) {
+                    for (var i = 0; i < 20; i++) {
+                        var id = data[i]._id;
                         var row = `<tr>
                         <td>${i + 1}</td>
                         <td>${data[i].headline}</td>
                         <td>${data[i].summary}</td>
                         <td>${data[i].link}</td>
                       </tr>`
-              $("#results-table").append(row);
-            }
+
+            
+                        $("#results-table").append(row);
+                        //add the data id as the attribute
+                        $()
                     }
-                    else {
-                        console.log("&&&&&&&&&&&&&&&");
+                }
+                else {
+                    console.log("No data came from db");
+                }
+            });
+        });
+
+
+        // Whenever someone clicks a row tag
+        $(document).on("click", "tr", function () {
+            // Empty the notes from the note section
+            $("#notes").empty();
+            // Save the id from the p tag
+            var thisId = $(this).attr("data-id");
+
+            // Now make an ajax call for the Article
+            $.ajax({
+                method: "GET",
+                url: "/articles/" + thisId
+            })
+                // With that done, add the note information to the page
+                .then(function (data) {
+                    console.log(data);
+                    // The title of the article
+                    $("#notes").append("<h2>" + data.title + "</h2>");
+                    // An input to enter a new title
+                    $("#notes").append("<input id='titleinput' name='title' >");
+                    // A textarea to add a new note body
+                    $("#notes").append("<textarea id='bodyinput' name='body'></textarea>");
+                    // A button to submit a new note, with the id of the article saved to it
+                    $("#notes").append("<button data-id='" + data._id + "' id='savenote'>Save Note</button>");
+
+                    // If there's a note in the article
+                    if (data.note) {
+                        // Place the title of the note in the title input
+                        $("#titleinput").val(data.note.title);
+                        // Place the body of the note in the body textarea
+                        $("#bodyinput").val(data.note.body);
                     }
                 });
-            });
-        </script>
+        });
+    </script>
 
 </body>
 
