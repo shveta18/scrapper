@@ -8,7 +8,8 @@ var cheerio = require("cheerio");
 //Require all models from the models folder
 var db = require("./models");
 
-var PORT = 8080;
+//var PORT = 8080;
+var port = process.env.PORT || 8080
 var app = express();
 
 // Use morgan logger for logging requests
@@ -83,6 +84,6 @@ app.get("/articles/:id", function(req, res) {
   });
 
 // Start the server
-app.listen(PORT, function () {
-    console.log("App running on port " + PORT + "!");
+app.listen(port, function () {
+    console.log("App running on port " + port + "!");
 });
