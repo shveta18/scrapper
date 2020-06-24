@@ -12,29 +12,31 @@
 </head>
 
 <body>
-    <div class="jumbotron">
-        <h1 class="display-4">Scrape the NY Times!</h1>
-        <p class="lead">Read the top 20 articles from the NY Times by clicking the button below.</p>
-        <button type="button " class="btn btn-primary scrape-btn">Scrape Articles</button>
-    </div>
+    <div class="containter">
+        <div class="jumbotron">
+            <h1 class="display-4">Scrape the NY Times!</h1>
+            <p class="lead">Read the top 20 articles from the NY Times by clicking the button below.</p>
+            <button type="button " class="btn btn-primary scrape-btn">Scrape Articles</button>
+        </div>
 
 
-    <div id="results" style="display: none">
-        <table class="table table-striped">
-            <thead>
-                <tr>
-                    <th scope="col">#</th>
-                    <th scope="col">Heading</th>
-                    <th scope="col">Summary</th>
-                    <th scope="col">Link</th>
-                    <th scope="col" class="notes-column">Notes</th>
-                </tr>
-            </thead>
-            <tbody class="results-table" id="results-table">
+        <div id="results" style="display: none">
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th scope="col">#</th>
+                        <th scope="col">Heading</th>
+                        <th scope="col">Summary</th>
+                        <th scope="col">Link</th>
+                        <th scope="col" class="notes-column">Notes</th>
+                    </tr>
+                </thead>
+                <tbody class="results-table" id="results-table">
 
-            </tbody>
-        </table>
+                </tbody>
+            </table>
 
+        </div>
     </div>
 
     <script src="https://code.jquery.com/jquery-3.5.1.js"
@@ -61,18 +63,21 @@
                 // if data is received, show a table of the list for first 20 articles
                 if (data) {
                     for (var i = 0; i < 20; i++) {
-                        var id = data[i]._id;
+
                         var row = `<tr>
                         <td>${i + 1}</td>
                         <td>${data[i].headline}</td>
                         <td>${data[i].summary}</td>
                         <td>${data[i].link}</td>
-                        <td><button class="add-note">Add</button></td>
+                        <td><button class="add-note" value="${data[i]._id}">Add</button></td>
                       </tr>`
+                       
+                        //add the data id as the attribute for each article
+                        
                         // add a save button to the last column
                         $("#results-table").append(row);
-                        //add the data id as the attribute
-                        $(".add-note").attr("value", id);
+                        
+
                     }
                 }
                 else {
@@ -86,8 +91,9 @@
         $(".add-note").on("click", function () {
             // Empty the notes from the note section
             $("#notes").empty();
-            // Save the id from the p tag
-            var thisId = $(this).attr("data-id");
+            // Get the id from the button value tag
+            var thisId = $(this).val();
+            console("The grabbed value of button is:" + thisId);
 
             // Now make an ajax call for the Article
             $.ajax({
