@@ -63,21 +63,17 @@
                 // if data is received, show a table of the list for first 20 articles
                 if (data) {
                     for (var i = 0; i < 20; i++) {
-
+                    //add the data id as the value for each button 
                         var row = `<tr>
                         <td>${i + 1}</td>
                         <td>${data[i].headline}</td>
                         <td>${data[i].summary}</td>
                         <td>${data[i].link}</td>
-                        <td><button class="add-note" value="${data[i]._id}">Add</button></td>
-                      </tr>`
-                       
-                        //add the data id as the attribute for each article
+                        <td><button class="add-note" value="${data[i]._id}">Add</button> <div id="notes"></div></td>
                         
+                        </tr>`
                         // add a save button to the last column
                         $("#results-table").append(row);
-                        
-
                     }
                 }
                 else {
@@ -87,13 +83,16 @@
         });
 
 
-        // Whenever someone clicks a row tag
-        $(".add-note").on("click", function () {
+        // Whenever someone clicks a button the ID should be grabbed form the button
+
+        $(document).on('click', '.add-note', function() {
+            event.preventDefault();
+            console.log("add button clicked");
             // Empty the notes from the note section
-            $("#notes").empty();
+            //$("#notes").empty();
             // Get the id from the button value tag
             var thisId = $(this).val();
-            console("The grabbed value of button is:" + thisId);
+            console.log("The grabbed value of button is:" + thisId);
 
             // Now make an ajax call for the Article
             $.ajax({
