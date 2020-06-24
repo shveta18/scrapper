@@ -63,7 +63,7 @@
                 // if data is received, show a table of the list for first 20 articles
                 if (data) {
                     for (var i = 0; i < 20; i++) {
-                    //add the data id as the value for each button 
+                        //add the data id as the value for each button 
                         var row = `<tr>
                         <td>${i + 1}</td>
                         <td>${data[i].headline}</td>
@@ -85,7 +85,7 @@
 
         // Whenever someone clicks a button the ID should be grabbed form the button
 
-        $(document).on('click', '.add-note', function() {
+        $(document).on('click', '.add-note', function () {
             event.preventDefault();
             console.log("add button clicked");
             // Empty the notes from the note section
@@ -119,6 +119,36 @@
                         $("#bodyinput").val(data.note.body);
                     }
                 });
+        });
+
+
+        // When you click the savenote button
+        $(document).on("click", "#savenote", function () {
+            // Grab the id associated with the article from the submit button
+            var thisId = $(this).attr("data-id");
+
+            // Run a POST request to change the note, using what's entered in the inputs
+            $.ajax({
+                method: "POST",
+                url: "/articles/" + thisId,
+                data: {
+                    // Value taken from title input
+                    title: $("#titleinput").val(),
+                    // Value taken from note textarea
+                    body: $("#bodyinput").val()
+                }
+            })
+                // With that done
+                .then(function (data) {
+                    // Log the response
+                    console.log(data);
+                    // Empty the notes section
+                    $("#notes").empty();
+                });
+
+            // Also, remove the values entered in the input and textarea for note entry
+            $("#titleinput").val("");
+            $("#bodyinput").val("");
         });
     </script>
 
